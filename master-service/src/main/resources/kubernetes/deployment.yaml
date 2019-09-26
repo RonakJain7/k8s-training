@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: master-service
+  namespace: demo
+  labels:
+    release: stable
+    app.kubernetes.io/name: master-service
+    app.kubernetes.io/instance: master-service
+spec:
+  selector:
+    matchLabels:
+      release: stable
+      app.kubernetes.io/name: master-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        release: stable
+        app.kubernetes.io/name: master-service
+    spec:
+      containers:
+      - name: master-service
+        image: ronakjainother/master-service:latest
+        env:
+        - name: SLAVE_SERVICE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: master-config-map
+              key: slave_service_url
+        - name: MESSAGE
+          valueFrom:
+            configMapKeyRef:
+              name: master-config-map
+              key: message
+        ports:
+        - containerPort: 8080

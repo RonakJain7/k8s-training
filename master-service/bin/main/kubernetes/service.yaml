@@ -1,0 +1,18 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: master-service
+  namespace: demo
+  labels:
+    release: stable
+    instance: master-service
+spec:
+  selector:
+    release: stable
+    app.kubernetes.io/name: master-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+    name: http
+  type: ClusterIP

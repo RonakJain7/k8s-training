@@ -1,0 +1,39 @@
+plugins {
+	id 'org.springframework.boot' version '2.1.8.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+	id 'java'
+	id "com.palantir.docker" version "0.22.1"
+}
+
+group = 'com.atcs'
+sourceCompatibility = '1.8'
+
+configurations {
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.10'
+}
+
+bootJar {
+	baseName = 'slave-service'
+}
+
+docker {
+	name "ronakjainother/${bootJar.baseName}"
+	tags 'latest'
+	dockerfile file('src/main/resources/docker/Dockerfile')
+	files bootJar.archivePath
+	buildArgs(['JAR_FILE': "${bootJar.archiveName}"])
+}

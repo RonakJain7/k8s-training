@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: slave-service
+  namespace: demo
+  labels:
+    release: stable
+    app.kubernetes.io/name: slave-service
+    app.kubernetes.io/instance: slave-service
+spec:
+  selector:
+    matchLabels:
+      release: stable
+      app.kubernetes.io/name: slave-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        release: stable
+        app.kubernetes.io/name: slave-service
+    spec:
+      containers:
+      - name: world-service
+        image: ronakjainother/slave-service:latest
+        env:
+        - name: MESSAGE
+          valueFrom:
+            configMapKeyRef:
+              name: slave-config-map
+              key: message
+        ports:
+        - containerPort: 8080

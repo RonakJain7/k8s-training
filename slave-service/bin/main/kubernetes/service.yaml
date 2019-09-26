@@ -1,0 +1,18 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: slave-service
+  namespace: demo
+  labels:
+    release: stable
+    app.kubernetes.io/name: slave-service
+spec:
+  selector:
+    release: stable
+    app.kubernetes.io/name: slave-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8090
+    name: http
+  type: ClusterIP
